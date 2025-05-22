@@ -1,5 +1,32 @@
+import TextBox from "@/app/components/textbox";
+
 export default function Home() {
   return (
-    <h1>Zora App</h1>
+    <Chat />
+  );
+}
+
+function Chat() {
+  return (
+    <div>
+      <h1>Chat</h1>
+      <MessageList />
+      <TextBox />
+    </div>
+  );
+}
+function MessageBox() {
+  return (
+    <div>
+      <p>Message</p>
+    </div>
+  );
+}
+
+function MessageList() {
+  return (
+    <div>
+      <MessageBox />
+    </div>
   );
 }
