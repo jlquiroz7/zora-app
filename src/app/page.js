@@ -1,4 +1,5 @@
 import TextBox from "@/app/components/textbox";
+import MessageBox from "@/app/components/messagebox";
 
 export default function Home() {
   return (
@@ -15,18 +16,12 @@ function Chat() {
     </div>
   );
 }
-function MessageBox() {
-  return (
-    <div>
-      <p>Message</p>
-    </div>
-  );
-}
 
 function MessageList() {
   return (
     <div>
-      <MessageBox />
+      <MessageBox message={{ role: "user", content: "Hello" }} />
+      <MessageBox message={{ role: "model", content: "Hello" }} />
     </div>
   );
 }
