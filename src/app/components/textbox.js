@@ -1,8 +1,9 @@
 "use client";
 import { TbSend2 } from "react-icons/tb";
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
-export default function TextBox() {
+export default function TextBox({onSend}) {
     const [message, setMessage] = useState("");
     return (
       <div style={styles.container}>
@@ -17,7 +18,14 @@ export default function TextBox() {
             message.length > 0 ? (
                 <button 
                     style={styles.button} 
-                    onClick={() => setMessage("")}
+                    onClick={() => {
+                        onSend({
+                            id: uuidv4(),
+                            role: "user",
+                            content: message,
+                        });
+                        setMessage("");
+                    }}
                 >
                     <TbSend2 />
                 </button>
