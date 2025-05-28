@@ -1,26 +1,62 @@
 "use client";
 import MessageList from "./messagelist";
 import TextBox from "./textbox";    
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
+async function sendMessage(messages) {
+  const contents = messages.map((message) => {
+    return {
+      role: message.role,
+      parts: [{text: message.content}]
+    }
+  });
+  const body = {
+    contents
+  };
+  const res = await fetch("http://localhost:8080/api/chat", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  console.log(data);
+  return {
+    id: uuidv4(),
+    role: "model",
+    content: data.candidates[0].content.parts[0].text,
+  };
+}
+
 export default function Chat() {
-    const [messages, setMessages] = useState([
-        {
-            id: uuidv4(),
-            role: "user",
-            content: "Hello",
-        },
-        {
-            id: uuidv4(),
-            role: "model",
-            content: "Hello",
-        },
-    ]);
+    const [messages, setMessages] = useState([]);
+    const [sideEffect, setSideEffect] = useState(IDLE);
+
+    useEffect(() => {
+      async function handleSideEffect() {
+        if (sideEffect === SEND_MESSAGE) {
+          const modelMessage = await sendMessage(messages);
+          setMessages([...messages, modelMessage]);
+        }
+      }
+      handleSideEffect();
+      return () => {
+        setSideEffect(IDLE);
+      }  
+    }, [sideEffect]);
+
     return (
       <div>
         <MessageList messages={messages} />
-        <TextBox onSend={(message) => setMessages([...messages, message])} />
+        <TextBox onSend={(message) => {
+          setMessages([...messages, message]);
+          setSideEffect(SEND_MESSAGE);
+        }} />
       </div>
     );
 }
+
+const SEND_MESSAGE = "SEND_MESSAGE";
+const IDLE = "IDLE";
