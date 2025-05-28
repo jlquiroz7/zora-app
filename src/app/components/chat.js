@@ -14,7 +14,7 @@ async function sendMessage(messages) {
   const body = {
     contents
   };
-  const res = await fetch("http://localhost:8080/api/chat", {
+  const res = await fetch(`${window.location.origin}/api/chat`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
