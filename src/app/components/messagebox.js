@@ -12,10 +12,21 @@ export default function MessageBox({message}) {
             message.role === "user" 
                 ? styles.userText 
                 : styles.aiText
-        }>{message.content}</p>
+        }>{
+            message.role === "user"
+                ? message.content
+                : parseMessageModel(message.content)
+        }</p>
       </div>
     );
 }
+
+function parseMessageModel(content) {
+    const json = JSON.parse(content);
+    console.log("content as json", json);
+    return json.message;
+}
+    
 
 const styles = {
     container: {

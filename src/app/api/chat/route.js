@@ -11,6 +11,7 @@ export async function POST(req) {
             system_instruction: {
                 parts: [{text: systemInstruction}],
             },
+            generationConfig,
             contents: body.contents,
         }),
     })
@@ -129,3 +130,32 @@ const systemInstruction = `
     | Compresor de A/C | Kia | Rio | 2019 | 2000 | Disponible | Yonke El Sol |
     | Cajuela | Jeep | Grand Cherokee | 2013 | 4200 | Disponible | Yonke El Sol |
     `;
+
+const generationConfig = {
+    response_mime_type: "application/json",
+    response_schema: {
+        type: "object",
+        properties: {
+        status: { type: "string" },
+        query: { type: "string" },
+        parts_found: {
+            type: "object",
+            properties: {
+            part_name: { type: "string" },
+            part_id: { type: "string" },
+            vehicle_info: { type: "string" },
+            locations: {
+                type: "object",
+                properties: {
+                    junkyard_id: { type: "string" },
+                    junkyard_name: { type: "string" },
+                    price: { type: "number" },
+                    condition: { type: "string" }
+                    }
+                }
+            }
+        },
+        message: { type: "string" }
+        }
+    }
+};
