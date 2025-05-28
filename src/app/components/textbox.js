@@ -3,6 +3,15 @@ import { TbSend2 } from "react-icons/tb";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
+function handleSend(message, onSend, setMessage) {
+    onSend({
+        id: uuidv4(),
+        role: "user",
+        content: message,
+    });
+    setMessage("");
+}
+
 export default function TextBox({onSend}) {
     const [message, setMessage] = useState("");
     return (
@@ -13,18 +22,18 @@ export default function TextBox({onSend}) {
             style={styles.input} 
             value={message}
             onChange={(e) => setMessage(e.target.value)}
+            onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                    handleSend(message, onSend, setMessage);
+                }
+            }}
         />
         {
             message.length > 0 ? (
                 <button 
                     style={styles.button} 
                     onClick={() => {
-                        onSend({
-                            id: uuidv4(),
-                            role: "user",
-                            content: message,
-                        });
-                        setMessage("");
+                        handleSend(message, onSend, setMessage);
                     }}
                 >
                     <TbSend2 />
