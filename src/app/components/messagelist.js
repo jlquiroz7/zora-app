@@ -1,8 +1,8 @@
 import MessageBox from "@/app/components/messagebox";
 
-export default function MessageList({messages}) {
+export default function MessageList({className, messages}) {
     return (
-      <div>
+      <div className={className}>
         {messages.map((message) => (
             <MessageBox key={message.id} message={message} />
         ))}

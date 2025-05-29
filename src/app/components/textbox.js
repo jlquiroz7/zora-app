@@ -12,14 +12,17 @@ function handleSend(message, onSend, setMessage) {
     setMessage("");
 }
 
-export default function TextBox({onSend}) {
+export default function TextBox({className, onSend}) {
     const [message, setMessage] = useState("");
     return (
-      <div style={styles.container}>
+      <div className={"flex flex-row border border-gray-200 rounded-xl bg-transparent" + className} style={{
+        padding: "20px",
+        margin: "20px",
+      }}>
         <input 
+            className="flex-1 text-xl border-none outline-none"
             type="text" 
             placeholder="Escribe tu mensaje" 
-            style={styles.input} 
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyUp={(e) => {
@@ -31,7 +34,7 @@ export default function TextBox({onSend}) {
         {
             message.length > 0 ? (
                 <button 
-                    style={styles.button} 
+                    className="flex items-center justify-center w-12 h-12 bg-blue-500 rounded-full cursor-pointer hover:bg-blue-600 transition-colors text-white"
                     onClick={() => {
                         handleSend(message, onSend, setMessage);
                     }}
@@ -39,7 +42,7 @@ export default function TextBox({onSend}) {
                     <TbSend2 />
                 </button>
             ) : (
-                <div style={styles.disabledButton}>
+                <div className="flex items-center justify-center w-12 h-12">
                 </div>
             )
         }
@@ -48,16 +51,6 @@ export default function TextBox({onSend}) {
 }
 
 const styles = {
-    container: {
-        display: "flex",
-        flexDirection: "row",
-        gap: "10px",
-        border: "1px solid #ccc",
-        borderRadius: "20px",
-        padding: "20px",
-        margin: "20px",
-        backgroundColor: "transparent",
-    },
     input: {
         flex: 1,
         fontSize: "20px",

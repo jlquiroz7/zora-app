@@ -48,9 +48,9 @@ export default function Chat() {
     }, [sideEffect]);
 
     return (
-      <div>
-        <MessageList messages={messages} />
-        <TextBox onSend={(message) => {
+      <div className="flex flex-col items-center h-dvh">
+        <MessageList className="flex-1 max-w-[2048px] w-9/10 md:w-8/10 lg:w-6/10" messages={messages} />
+        <TextBox className="max-w-[2048px] w-9/10 md:w-8/10 lg:w-6/10" onSend={(message) => {
           setMessages([...messages, message]);
           setSideEffect(SEND_MESSAGE);
         }} />
