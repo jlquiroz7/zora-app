@@ -22,6 +22,7 @@ export default function MessageBox({message}) {
 }
 
 function parseMessageModel(content) {
+    console.log("content", content);
     const json = JSON.parse(content);
     console.log("content as json", json);
     return json.message;

@@ -3,7 +3,7 @@ import { TbEdit } from "react-icons/tb";
 import { useState } from "react";
 import ChatHistory from "./chathistory";
 
-export default function LeftPanel({chatHistory, currentChat, onNewChatClick}) {
+export default function LeftPanel({chatHistory, currentChat, onNewChatClick, onChatClick}) {
     const [showMenu, setShowMenu] = useState(false);
     return (
         <div className="flex flex-col items-start h-dvh bg-[#edf1f7] transition-width duration-200 gap-2" style={{
@@ -29,7 +29,7 @@ export default function LeftPanel({chatHistory, currentChat, onNewChatClick}) {
                 {showMenu && <p>Nueva conversación</p>}
             </button>
             {showMenu && (
-                <ChatHistory showMenu={showMenu} chatHistory={chatHistory} />
+                <ChatHistory showMenu={showMenu} chatHistory={chatHistory} onChatClick={onChatClick} />
             )}
         </div>
     );

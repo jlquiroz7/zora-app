@@ -35,7 +35,7 @@ export default function Chat() {
   const [chatHistory, setChatHistory] = useState([
     {
       id: uuidv4(),
-      timestamp: new Date(),
+      timestamp: new Date("2025-06-03T21:25:00"),
       messages: [
         {
           id: uuidv4(),
@@ -45,10 +45,26 @@ export default function Chat() {
         {
           id: uuidv4(),
           role: "model",
-          content: "Hola, ¿en qué puedo ayudarte?",
+          content: "{ \"message\": \"Hola, ¿en qué puedo ayudarte?\" }",
         },
       ],
-    }
+    },
+    {
+      id: uuidv4(),
+      timestamp: new Date("2025-06-02T21:26:00"),
+      messages: [
+        {
+          id: uuidv4(),
+          role: "user",
+          content: "Hola",
+        },
+        {
+          id: uuidv4(),
+          role: "model",
+          content: "{ \"message\": \"Hola, soy Zora, ¿en qué puedo ayudarte?\" }",
+        },
+      ],
+    },
   ]);
   const [currentChat, setCurrentChat] = useState({
     id: uuidv4(),
@@ -100,6 +116,9 @@ export default function Chat() {
             timestamp: new Date(),
             messages: [],
           });
+        }}
+        onChatClick={(chat) => {
+          setCurrentChat(chat);
         }}
       />
       <div className="flex-1 flex flex-col items-center h-dvh">
