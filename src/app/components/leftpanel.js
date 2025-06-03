@@ -20,7 +20,7 @@ export default function LeftPanel({chatHistory, currentChat, onNewChatClick, onC
                 style={{
                     width: showMenu ? "280px" : "",
                 }}
-                disabled={currentChat.messages.length === 0}
+                disabled={currentChat?.messages?.length === 0}
                 onClick={onNewChatClick}
                 >
                 <TbEdit className="w-10 h-10" style={{

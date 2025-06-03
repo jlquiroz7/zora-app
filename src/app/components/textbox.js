@@ -3,8 +3,8 @@ import { TbSend2 } from "react-icons/tb";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-function handleSend(message, onSend, setMessage) {
-    onSend({
+function handleSend(chatId, message, onSend, setMessage) {
+    onSend(chatId, {
         id: uuidv4(),
         role: "user",
         content: message,
@@ -12,7 +12,7 @@ function handleSend(message, onSend, setMessage) {
     setMessage("");
 }
 
-export default function TextBox({className, onSend}) {
+export default function TextBox({className, chatId, onSend}) {
     const [message, setMessage] = useState("");
     return (
       <div className={"flex flex-row border border-gray-200 rounded-xl bg-transparent" + className} style={{
@@ -27,7 +27,7 @@ export default function TextBox({className, onSend}) {
             onChange={(e) => setMessage(e.target.value)}
             onKeyUp={(e) => {
                 if (e.key === "Enter") {
-                    handleSend(message, onSend, setMessage);
+                    handleSend(chatId, message, onSend, setMessage);
                 }
             }}
         />
@@ -36,7 +36,7 @@ export default function TextBox({className, onSend}) {
                 <button 
                     className="flex items-center justify-center w-12 h-12 bg-blue-500 rounded-full cursor-pointer hover:bg-blue-600 transition-colors text-white"
                     onClick={() => {
-                        handleSend(message, onSend, setMessage);
+                        handleSend(chatId, message, onSend, setMessage);
                     }}
                 >
                     <TbSend2 />
