@@ -29,7 +29,7 @@ export default function LeftPanel({chatHistory, currentChat, onNewChatClick, onC
                 {showMenu && <p>Nueva conversación</p>}
             </button>
             {showMenu && (
-                <ChatHistory showMenu={showMenu} chatHistory={chatHistory} onChatClick={onChatClick} />
+                <ChatHistory showMenu={showMenu} chatHistory={chatHistory} currentChat={currentChat} onChatClick={onChatClick} />
             )}
         </div>
     );
