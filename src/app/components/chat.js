@@ -23,7 +23,6 @@ async function sendMessage(messages) {
     body: JSON.stringify(body),
   });
   const data = await res.json();
-  console.log(data);
   return {
     id: uuidv4(),
     role: "model",
@@ -73,30 +72,33 @@ export default function Chat() {
   });
   const [sideEffect, setSideEffect] = useState(IDLE);
 
-  function addChatToHistory() {
+  function addOrUpdateChatOnHistory(currentChat) {
     if (!chatHistory.some((chat) => chat.id === currentChat.id)) {
+      setChatHistory([currentChat, ...chatHistory]);
+    } else {
       const updatedChatHistory = chatHistory.map((chat) => {
         if (chat.id === currentChat.id) {
           return {
             ...chat,
-            messages: [...chat.messages, modelMessage],
+            messages: [...chat.messages, currentChat.messages[currentChat.messages.length - 1]],
           };
         }
         return chat;
       });
       setChatHistory(updatedChatHistory);
     }
-  }
+}
 
   useEffect(() => {
     async function handleSideEffect() {
       if (sideEffect === SEND_MESSAGE) {
         const modelMessage = await sendMessage(currentChat.messages);
-        setCurrentChat({
+        const updatedCurrentChat = {
           ...currentChat,
           messages: [...currentChat.messages, modelMessage],
-        });
-        addChatToHistory();
+        };
+        setCurrentChat(updatedCurrentChat);
+        addOrUpdateChatOnHistory(updatedCurrentChat);
       }
     }
     handleSideEffect();
@@ -124,11 +126,12 @@ export default function Chat() {
       <div className="flex-1 flex flex-col items-center h-dvh">
         <MessageList className="flex-1 max-w-[2048px] w-9/10 md:w-8/10 lg:w-6/10" messages={currentChat.messages} />
         <TextBox className="max-w-[2048px] w-9/10 md:w-8/10 lg:w-6/10" onSend={(message) => {
-          setCurrentChat({
+          const updatedChat = {
             ...currentChat,
             messages: [...currentChat.messages, message],
-          });
-          addChatToHistory();
+          };
+          setCurrentChat(updatedChat);
+          addOrUpdateChatOnHistory(updatedChat);
           setSideEffect(SEND_MESSAGE);
         }} />
       </div>
