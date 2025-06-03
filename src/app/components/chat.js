@@ -32,34 +32,89 @@ async function sendMessage(messages) {
 }
 
 export default function Chat() {
-    const [messages, setMessages] = useState([]);
-    const [sideEffect, setSideEffect] = useState(IDLE);
+  const [chatHistory, setChatHistory] = useState([
+    {
+      id: uuidv4(),
+      timestamp: new Date(),
+      messages: [
+        {
+          id: uuidv4(),
+          role: "user",
+          content: "Hola",
+        },
+        {
+          id: uuidv4(),
+          role: "model",
+          content: "Hola, ¿en qué puedo ayudarte?",
+        },
+      ],
+    }
+  ]);
+  const [currentChat, setCurrentChat] = useState({
+    id: uuidv4(),
+    timestamp: new Date(),
+    messages: [],
+  });
+  const [sideEffect, setSideEffect] = useState(IDLE);
 
-    useEffect(() => {
-      async function handleSideEffect() {
-        if (sideEffect === SEND_MESSAGE) {
-          const modelMessage = await sendMessage(messages);
-          setMessages([...messages, modelMessage]);
+  function addChatToHistory() {
+    if (!chatHistory.some((chat) => chat.id === currentChat.id)) {
+      const updatedChatHistory = chatHistory.map((chat) => {
+        if (chat.id === currentChat.id) {
+          return {
+            ...chat,
+            messages: [...chat.messages, modelMessage],
+          };
         }
-      }
-      handleSideEffect();
-      return () => {
-        setSideEffect(IDLE);
-      }  
-    }, [sideEffect]);
+        return chat;
+      });
+      setChatHistory(updatedChatHistory);
+    }
+  }
 
-    return (
-      <div className="flex flex-row">
-        <LeftPanel />
-        <div className="flex-1 flex flex-col items-center h-dvh">
-          <MessageList className="flex-1 max-w-[2048px] w-9/10 md:w-8/10 lg:w-6/10" messages={messages} />
-          <TextBox className="max-w-[2048px] w-9/10 md:w-8/10 lg:w-6/10" onSend={(message) => {
-            setMessages([...messages, message]);
-            setSideEffect(SEND_MESSAGE);
-          }} />
-        </div>
+  useEffect(() => {
+    async function handleSideEffect() {
+      if (sideEffect === SEND_MESSAGE) {
+        const modelMessage = await sendMessage(currentChat.messages);
+        setCurrentChat({
+          ...currentChat,
+          messages: [...currentChat.messages, modelMessage],
+        });
+        addChatToHistory();
+      }
+    }
+    handleSideEffect();
+    return () => {
+      setSideEffect(IDLE);
+    }  
+  }, [sideEffect]);
+
+  return (
+    <div className="flex flex-row">
+      <LeftPanel 
+        chatHistory={chatHistory}
+        currentChat={currentChat}
+        onNewChatClick={() => {
+          setCurrentChat({
+            id: uuidv4(),
+            timestamp: new Date(),
+            messages: [],
+          });
+        }}
+      />
+      <div className="flex-1 flex flex-col items-center h-dvh">
+        <MessageList className="flex-1 max-w-[2048px] w-9/10 md:w-8/10 lg:w-6/10" messages={currentChat.messages} />
+        <TextBox className="max-w-[2048px] w-9/10 md:w-8/10 lg:w-6/10" onSend={(message) => {
+          setCurrentChat({
+            ...currentChat,
+            messages: [...currentChat.messages, message],
+          });
+          addChatToHistory();
+          setSideEffect(SEND_MESSAGE);
+        }} />
       </div>
-    );
+    </div>
+  );
 }
 
 const SEND_MESSAGE = "SEND_MESSAGE";
