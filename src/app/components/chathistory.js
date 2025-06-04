@@ -4,7 +4,7 @@ export default function ChatHistory({showMenu, chatHistory, currentChat, onChatC
     const isCurrentChat = (chat) => chat.id === currentChat.id;
     return (
         <div className="flex flex-col">
-            <p>Reciente</p>
+            {showMenu && chatHistory.length > 0 && <p>Reciente</p>}
             {chatHistory.map((chat) => (
                 <div 
                     key={chat.id}

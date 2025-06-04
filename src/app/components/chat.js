@@ -5,6 +5,11 @@ import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import LeftPanel from "./leftpanel";
 
+const user = {
+  id: "12341234",
+  username: "username",
+}
+
 async function sendMessage(messages) {
   const contents = messages.map((message) => {
     return {
@@ -31,40 +36,7 @@ async function sendMessage(messages) {
 }
 
 export default function Chat() {
-  const [chatHistory, setChatHistory] = useState([
-    {
-      id: uuidv4(),
-      timestamp: new Date("2025-06-03T21:25:00"),
-      messages: [
-        {
-          id: uuidv4(),
-          role: "user",
-          content: "Hola",
-        },
-        {
-          id: uuidv4(),
-          role: "model",
-          content: "{ \"message\": \"Hola, ¿en qué puedo ayudarte?\" }",
-        },
-      ],
-    },
-    {
-      id: uuidv4(),
-      timestamp: new Date("2025-06-02T21:26:00"),
-      messages: [
-        {
-          id: uuidv4(),
-          role: "user",
-          content: "Hola",
-        },
-        {
-          id: uuidv4(),
-          role: "model",
-          content: "{ \"message\": \"Hola, soy Zora, ¿en qué puedo ayudarte?\" }",
-        },
-      ],
-    },
-  ]);
+  const [chatHistory, setChatHistory] = useState([]);
   const [currentChatId, setCurrentChatId] = useState(uuidv4());
   const [sideEffect, setSideEffect] = useState(IDLE);
 
@@ -82,18 +54,25 @@ export default function Chat() {
 
   function addOrUpdateChatOnHistory(currentChat) {
     if (!chatHistory.some((chat) => chat.id === currentChat.id)) {
-      setChatHistory([currentChat, ...chatHistory]);
-    } else {
-      const updatedChatHistory = chatHistory.map((chat) => {
-        if (chat.id === currentChat.id) {
-          return {
-            ...chat,
-            messages: [...chat.messages, currentChat.messages[currentChat.messages.length - 1]],
-          };
-        }
-        return chat;
+      setChatHistory((prevChatHistory) => {
+        const updatedChatHistory = [...prevChatHistory, currentChat];
+        localStorage.setItem(user.id, JSON.stringify(updatedChatHistory));
+        return updatedChatHistory;
       });
-      setChatHistory(updatedChatHistory);
+    } else {
+      setChatHistory((prevChatHistory) => {
+        const updatedChatHistory = prevChatHistory.map((chat) => {
+          if (chat.id === currentChat.id) {
+            return {
+              ...chat,
+              messages: [...chat.messages, currentChat.messages[currentChat.messages.length - 1]],
+            };
+          }
+          return chat;
+        });
+        localStorage.setItem(user.id, JSON.stringify(updatedChatHistory));
+        return updatedChatHistory;
+      });
     }
   }
 
@@ -113,6 +92,16 @@ export default function Chat() {
       setSideEffect(IDLE);
     }  
   }, [sideEffect]);
+
+  useEffect(() => {
+    const chatHistoryAsString = localStorage.getItem(user.id);
+    if (chatHistoryAsString) {
+      const chatHistory = JSON.parse(chatHistoryAsString);
+      setChatHistory(chatHistory);
+    } else {
+      localStorage.setItem(user.id, JSON.stringify([]));
+    }
+  }, []);
 
   return (
     <div className="flex flex-row">
